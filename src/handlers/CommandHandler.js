@@ -1,5 +1,6 @@
 import { EOL, homedir } from 'os';
-import { failedOperationMessage, getLocationMessage } from '../utils/messages.js';
+import { send } from '../utils/common.js';
+import { failedOperationMessage, getLocationMessage, invalidInputMassage } from '../utils/messages.js';
 import { handlers } from './handlers.js';
 
 const STATUS = {
@@ -26,7 +27,7 @@ export class CommandHandler {
     const handleOperator = handlers[operator];
 
     if (!handleOperator) {
-      console.log(failedOperationMessage);
+      send(invalidInputMassage);
       return;
     }
 
@@ -34,12 +35,12 @@ export class CommandHandler {
       this.status = STATUS.BUSY;
       this.currentPath = await handleOperator({ path: this.currentPath, args: operatorArgs });
     } catch (error) {
-      console.log('oops! ERROR:', error.message);
-      console.log(failedOperationMessage);
+      send('oops! ERROR: \n', error); // ! *** ???
+      send(failedOperationMessage);
     } finally {
       this.status = STATUS.FREE;
     }
 
-    console.log(getLocationMessage(this.currentPath));
+    send(getLocationMessage(this.currentPath));
   }
 }

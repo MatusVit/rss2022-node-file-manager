@@ -3,6 +3,7 @@ import process from 'process';
 
 import { CommandHandler } from './handlers/commandHandler.js';
 import { handleExit } from './handlers/exitHandler.js';
+import { send } from './utils/common.js';
 import { getLocationMessage, getWelcomeMessage } from './utils/messages.js';
 
 export class FileManager {
@@ -18,15 +19,15 @@ export class FileManager {
   }
 
   run() {
-    console.log(getWelcomeMessage(this.userName));
-    console.log(getLocationMessage(homedir()));
+    send(getWelcomeMessage(this.userName));
+    send(getLocationMessage(homedir()));
 
     process.on('exit', (code) => handleExit({ code, userName: this.userName }));
 
     process.on('SIGINT', (code) => handleExit({ code, userName: this.userName }));
 
     process.on('uncaughtExceptionMonitor', (err, origin) => {
-      console.log('EXCEPTION: ', err, origin);
+      send('EXCEPTION: ', err, origin);
     });
 
     this.listenConsole();
@@ -39,7 +40,7 @@ export class FileManager {
       if (commandString === '.exit') process.exit(1);
 
       if (this.commandHandler.checkIsBusy()) {
-        console.log('Wait please. Operation in progress...');
+        send('Wait please. Operation in progress...');
         return;
       }
 
