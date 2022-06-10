@@ -14,10 +14,6 @@ export class CommandHandler {
     this.status = STATUS.FREE;
   }
 
-  getStatus() {
-    return this.status;
-  }
-
   checkIsBusy() {
     return this.status === STATUS.BUSY;
   }
@@ -33,9 +29,10 @@ export class CommandHandler {
 
     try {
       this.status = STATUS.BUSY;
-      this.currentPath = await handleOperator({ path: this.currentPath, args: operatorArgs });
+
+      const newPath = await handleOperator({ path: this.currentPath, args: operatorArgs });
+      if (newPath) this.currentPath = newPath;
     } catch (error) {
-      send('oops! ERROR: \n', error); // ! *** ???
       send(failedOperationMessage);
     } finally {
       this.status = STATUS.FREE;

@@ -1,34 +1,45 @@
-import { join, resolve } from 'path';
-import { readdir, stat } from 'fs/promises';
-import { checkIsDirectory, send } from '../utils/common.js';
-import { failedOperationMessage, invalidInputMassage } from '../utils/messages.js';
+import { dirname, resolve, basename } from 'path';
+import { rename, rm, writeFile } from 'fs/promises';
+import { createReadStream, createWriteStream } from 'fs';
+import { pipeline } from 'stream/promises';
+
+import { createSendStream } from '../utils/common.js';
 
 export const handleCat = async ({ path, args }) => {
-  // todo ***
+  await pipeline(createReadStream(resolve(path, args[0])), createSendStream());
   return path;
 };
 
 export const handleAdd = async ({ path, args }) => {
-  // todo ***
+  await writeFile(resolve(path, args[0]), '', { flag: 'wx' });
   return path;
 };
 
 export const handleRn = async ({ path, args }) => {
-  // todo ***
+  const [file, newFilename] = args;
+  const pathToFile = resolve(path, file);
+  await rename(pathToFile, resolve(dirname(pathToFile), newFilename));
   return path;
 };
 
 export const handleCp = async ({ path, args }) => {
-  // todo ***
-  return path;
-};
+  const [pathToFile, pathToNewDirectory] = args;
+  const readStream = createReadStream(resolve(path, pathToFile));
+  const writeStream = createWriteStream(resolve(path, pathToNewDirectory, basename(pathToFile)));
 
-export const handleMv = async ({ path, args }) => {
-  // todo ***
+  await pipeline(readStream, writeStream);
   return path;
 };
 
 export const handleRm = async ({ path, args }) => {
-  // todo ***
+  const [pathToFile] = args;
+  await rm(resolve(path, pathToFile));
+  return path;
+};
+
+export const handleMv = async ({ path, args }) => {
+  const [pathToFile] = args;
+  await handleCp({ path, args });
+  await handleRm({ path, args: [pathToFile] });
   return path;
 };
