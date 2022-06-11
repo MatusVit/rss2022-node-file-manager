@@ -41,7 +41,7 @@ export class FileManager {
     process.stdin.on('data', (message) => {
       const commandString = message.toString().replace(EOL, '');
 
-      if (commandString === '.exit') process.exit(1);
+      if (commandString.trim() === '.exit') process.exit(1);
 
       if (this.commandHandler.checkIsBusy()) {
         send('Wait please. Operation in progress...');

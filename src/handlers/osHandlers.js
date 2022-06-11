@@ -11,7 +11,7 @@ export const handlerOs = async ({ path, args }) => {
 
     case '--cpus':
       const cpusArray = cpus();
-      send(`Overall amount of CPUS = ${cpusArray.length}`);
+      send(`Total number of CPUs = ${cpusArray.length}`);
       send(cpusArray.map(({ model, speed }) => ({ model, speed })));
       break;
 

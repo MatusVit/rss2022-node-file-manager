@@ -25,16 +25,10 @@ export const handleRn = async ({ path, args }) => {
 export const handleCp = async ({ path, args }) => {
   const [pathToFile, pathToNewDirectory] = args;
 
-  const readStream = createReadStream(resolve(path, pathToFile), { flags: 'wx' });
-  // todo *** check args
+  const readStream = createReadStream(resolve(path, pathToFile));
   const writeStream = createWriteStream(resolve(path, pathToNewDirectory, basename(pathToFile)), { flags: 'wx' });
-
-  // readStream.on('error', (err) => {
-  //   console.log('readStream error', err);
-  //   throw new Error('readStream error');
-  // });
-
   await pipeline(readStream, writeStream);
+
   return path;
 };
 
