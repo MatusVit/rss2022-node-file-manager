@@ -29,7 +29,6 @@ export class CommandHandler {
 
     try {
       this.status = STATUS.BUSY;
-
       const newPath = await handleOperator({ path: this.currentPath, args: operatorArgs });
       if (newPath) this.currentPath = newPath;
     } catch (error) {

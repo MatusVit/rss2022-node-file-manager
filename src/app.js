@@ -22,12 +22,16 @@ export class FileManager {
     send(getWelcomeMessage(this.userName));
     send(getLocationMessage(homedir()));
 
-    process.on('exit', (code) => handleExit({ code, userName: this.userName }));
+    process.on('exit', (code) => {
+      handleExit({ code, userName: this.userName });
+    });
 
-    process.on('SIGINT', (code) => handleExit({ code, userName: this.userName }));
+    process.on('SIGINT', (code) => {
+      handleExit({ code, userName: this.userName });
+    });
 
     process.on('uncaughtExceptionMonitor', (err, origin) => {
-      send('EXCEPTION: ', err, origin);
+      console.log('uncaughtExceptionMonitor EXCEPTION:', err, origin);
     });
 
     this.listenConsole();
